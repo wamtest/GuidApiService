@@ -1,7 +1,6 @@
 ﻿using GuidApiService.Models;
 using GuidApiService.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace GuidApiService.Controllers
 {

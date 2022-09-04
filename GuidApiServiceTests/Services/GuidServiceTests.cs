@@ -1,14 +1,7 @@
-﻿using Xunit;
-using GuidApiService.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoFixture.Xunit2;
-using Microsoft.EntityFrameworkCore;
+﻿using AutoFixture;
 using GuidApiService.Models;
-using AutoFixture;
+using Microsoft.EntityFrameworkCore;
+using Xunit;
 
 namespace GuidApiService.Services.Tests
 {

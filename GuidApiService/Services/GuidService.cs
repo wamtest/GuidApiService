@@ -92,7 +92,7 @@ namespace GuidApiService.Services
             {
                 return false;
             }
-            foreach (char c in guid) 
+            foreach (char c in guid)
             {
                 if (!((c >= '0' && c <= '9') || (c >= 'A' && c <= 'F')))
                 {
