@@ -46,8 +46,6 @@ https://go.microsoft.com/fwlink/?linkid=2123754
 
 8. Only some unit tests are written as example
 
-9. Not all items are documented, most of the important public ones are covered
-
 # Unit Tests and Swagger
 
 ![alt text](https://github.com/wamtest/GuidApiService/blob/main/sampletests.png)
