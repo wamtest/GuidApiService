@@ -76,7 +76,7 @@ namespace GuidApiService.Controllers
                 return Problem("Invalid expiry");
             }
 
-            GuidInfoOutput guidInfoOutput = await _guidService.Save(guid, expire, user);
+            GuidInfoOutput guidInfoOutput = await _guidService.Create(guid, expire, user);
 
             return CreatedAtAction("Create", guidInfoOutput);
         }
@@ -92,7 +92,7 @@ namespace GuidApiService.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GuidInfoOutput>> Create(string user)
         {
-            GuidInfoOutput guidInfoOutput = await _guidService.Save(user);
+            GuidInfoOutput guidInfoOutput = await _guidService.Create(user);
 
             return CreatedAtAction("Create", guidInfoOutput);
         }

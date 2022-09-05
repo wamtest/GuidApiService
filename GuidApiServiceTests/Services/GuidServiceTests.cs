@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using GuidApiService.DataProviders;
 using GuidApiService.Models;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -23,7 +24,8 @@ namespace GuidApiService.Services.Tests
 
             using (var context = new GuidServiceContext(options))
             {
-                GuidService sut = new GuidService(context);
+                var repo = new GuidApiRepository(context);
+                var sut = new GuidService(repo);
                 var guidInfo = sut.BuildGuid(guid, guidInput);
                 Assert.Equal(guid, guidInfo.GuidInfoId.ToString());
             }
@@ -46,7 +48,8 @@ namespace GuidApiService.Services.Tests
                 });
                 context.SaveChanges();
 
-                GuidService sut = new GuidService(context);
+                var repo = new GuidApiRepository(context);
+                var sut = new GuidService(repo);
                 var output = await sut.Get(guid.ToString());
 
                 Assert.Equal(guid.ToString("N").ToUpper(), output.Guid);
@@ -76,7 +79,8 @@ namespace GuidApiService.Services.Tests
                 });
                 context.SaveChanges();
 
-                GuidService sut = new GuidService(context);
+                var repo = new GuidApiRepository(context);
+                var sut = new GuidService(repo);
                 var output = await sut.Get(guid.ToString());
 
                 Assert.Equal(guid.ToString("N").ToUpper(), output.Guid);
@@ -93,8 +97,11 @@ namespace GuidApiService.Services.Tests
 
             using (var context = new GuidServiceContext(options))
             {
-                GuidService sut = new GuidService(context);
-                var output = await sut.Save(user);
+
+                var repo = new GuidApiRepository(context);
+                var sut = new GuidService(repo);
+
+                var output = await sut.Create(user);
 
                 Assert.Equal(user, output.User);
                 Assert.NotNull(output.Expire);
@@ -121,7 +128,8 @@ namespace GuidApiService.Services.Tests
                 });
                 context.SaveChanges();
 
-                GuidService sut = new GuidService(context);
+                var repo = new GuidApiRepository(context);
+                var sut = new GuidService(repo);
                 var output = await sut.Update(guid.ToString(), 0, updatedUser);
 
                 Assert.Equal(updatedUser, output.User);
@@ -129,13 +137,13 @@ namespace GuidApiService.Services.Tests
         }
 
         [Fact()]
-        public void IsExpiryInPastTest()
+        public void IsExpiryInPastTest_TODO()
         {
             // TODO
         }
 
         [Fact()]
-        public void IsExpiryValidTest()
+        public void IsExpiryValidTest_TODO()
         {
             // TODO
         }
@@ -147,7 +155,7 @@ namespace GuidApiService.Services.Tests
         }
 
         [Fact()]
-        public void IsValidUserTest()
+        public void IsValidUserTest_TODO()
         {
             // TODO
         }

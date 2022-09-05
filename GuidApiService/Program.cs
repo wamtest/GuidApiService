@@ -1,3 +1,4 @@
+using GuidApiService.DataProviders;
 using GuidApiService.Models;
 using GuidApiService.Services;
 using Microsoft.EntityFrameworkCore;
@@ -7,8 +8,10 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 var isSqlServer = builder.Configuration.GetValue<bool>("DbIsSqlServer");
-var connectionString = builder.Configuration.GetValue<string>("ConnectionStrings:GuidApiServiceDatabase");
+var dbConnString = builder.Configuration.GetValue<string>("ConnectionStrings:GuidApiServiceDatabase");
 var shouldUseCache = builder.Configuration.GetValue<bool>("UseCache");
+var cacheConnString = builder.Configuration.GetValue<string>("ConnectionStrings:Redis");
+var cacheName = builder.Configuration.GetValue<string>("RedisCacheName");
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -16,25 +19,23 @@ builder.Services.AddTransient<IGuidService, GuidService>();
 //Add DbContext
 if (isSqlServer)
 {
-    builder.Services.AddDbContext<GuidServiceContext>(opt => opt.UseSqlServer(connectionString));
-
-    /*
-    TODO: Caching not implemented
+    builder.Services.AddDbContext<GuidServiceContext>(opt => opt.UseSqlServer(dbConnString));
+    
     if (shouldUseCache)
     {
         builder.Services.AddStackExchangeRedisCache(options =>
          {
-             options.Configuration = builder.Configuration.GetConnectionString("TODO RedisConectionString");
-             options.InstanceName = "GuidAPIServiceInstance";
+             options.Configuration = builder.Configuration.GetConnectionString("cacheConnString");
+             options.InstanceName = cacheName;
          });
     }
-    */
 }
 else
 {
     builder.Services.AddDbContext<GuidServiceContext>(opt => opt.UseInMemoryDatabase("GuidInfoSet"));
 }
 
+builder.Services.AddScoped<IGuidApiRepository<GuidInfo>, GuidApiRepository>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

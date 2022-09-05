@@ -44,11 +44,9 @@ https://go.microsoft.com/fwlink/?linkid=2123754
 
 7. Caching not implemented
 
-8. As database gets more complex, can introduce a repository pattern by abstracing what is in GuidService
+8. Only some unit tests are written as example
 
-9. Only some unit tests are written as example
-
-10. Not all items are documented, most of the important public ones are covered
+9. Not all items are documented, most of the important public ones are covered
 
 # Unit Tests and Swagger
 

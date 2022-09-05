@@ -1,15 +1,23 @@
-﻿using GuidApiService.Models;
+﻿using GuidApiService.DataProviders;
+using GuidApiService.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace GuidApiService.Services
 {
+    /// <summary>
+    /// Service with guidInfo operations
+    /// </summary>
     public class GuidService : IGuidService
     {
-        private readonly GuidServiceContext _dbContext;
+        private readonly IGuidApiRepository<GuidInfo> _guidApiRepository;
 
-        public GuidService(GuidServiceContext dbContext)
+        /// <summary>
+        /// GuidService Constructor
+        /// </summary>
+        /// <param name="guidApiRepository"></param>
+        public GuidService(IGuidApiRepository<GuidInfo> guidApiRepository)
         {
-            _dbContext = dbContext;
+            _guidApiRepository = guidApiRepository;
         }
 
         /// <summary>
@@ -34,12 +42,11 @@ namespace GuidApiService.Services
         /// <returns></returns>
         public async Task<bool> Delete(string guid)
         {
-            var didRemove = false;
-            var guidInfo = GetGuidInfo(guid);
+            bool didRemove = false;
+            GuidInfo guidInfo = _guidApiRepository.Get(guid);
             if (guidInfo != null)
             {
-                _dbContext.GuidInfoSet.Remove(guidInfo);
-                await _dbContext.SaveChangesAsync();
+                await _guidApiRepository.Delete(guid);
                 didRemove = true;
             }
 
@@ -53,7 +60,7 @@ namespace GuidApiService.Services
         /// <returns></returns>
         public async Task<GuidInfoOutput?> Get(string guid)
         {
-            GuidInfo guidInfo = GetGuidInfo(guid);
+            GuidInfo guidInfo = _guidApiRepository.Get(guid);
             GuidInfoOutput guidInfoOutput = new GuidInfoOutput().GuidInfoToOutput(guidInfo);
             return guidInfoOutput;
         }
@@ -123,7 +130,7 @@ namespace GuidApiService.Services
         /// <param name="expire"></param>
         /// <param name="user"></param>
         /// <returns></returns>
-        public async Task<GuidInfoOutput> Save(string guid, long expire, string user)
+        public async Task<GuidInfoOutput> Create(string guid, long expire, string user)
         {
             GuidInput guidInput = new()
             {
@@ -131,8 +138,9 @@ namespace GuidApiService.Services
                 MetaData = user
             };
 
-            GuidInfo guidInfo = await SaveGuid(guid, guidInput);
-            GuidInfoOutput guidInfoOutput = new GuidInfoOutput().GuidInfoToOutput(guidInfo);
+            GuidInfo guidInfo = BuildGuid(guid, guidInput);
+            GuidInfo createdGuidInfo = await _guidApiRepository.Create(guidInfo);
+            GuidInfoOutput guidInfoOutput = new GuidInfoOutput().GuidInfoToOutput(createdGuidInfo);
 
             return guidInfoOutput;
         }
@@ -143,7 +151,7 @@ namespace GuidApiService.Services
         /// <param name="user"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public async Task<GuidInfoOutput> Save(string user)
+        public async Task<GuidInfoOutput> Create(string user)
         {
             string newGuid = Guid.NewGuid().ToString();
             GuidInput guidInput = new()
@@ -151,12 +159,13 @@ namespace GuidApiService.Services
                 Expire = DateTime.Now.AddDays(30),
                 MetaData = user
             };
-            var possibleGuidInfo = GetGuidInfo(newGuid);
+            var possibleGuidInfo = _guidApiRepository.Get(newGuid);
 
             if (possibleGuidInfo == null)
             {
-                GuidInfo guidInfo = await SaveGuid(newGuid, guidInput);
-                GuidInfoOutput guidInfoOutput = new GuidInfoOutput().GuidInfoToOutput(guidInfo);
+                GuidInfo guidInfo = BuildGuid(newGuid, guidInput);
+                GuidInfo createdGuidInfo = await _guidApiRepository.Create(guidInfo);
+                GuidInfoOutput guidInfoOutput = new GuidInfoOutput().GuidInfoToOutput(createdGuidInfo);
                 return guidInfoOutput;
             }
             else
@@ -176,7 +185,7 @@ namespace GuidApiService.Services
         public async Task<GuidInfoOutput> Update(string guid, long expire, string user)
         {
             var toUpdate = false;
-            var possibleGuidInfo = GetGuidInfo(guid);
+            var possibleGuidInfo = _guidApiRepository.Get(guid);
             if (possibleGuidInfo != null)
             {
                 if (IsExpiryValid(expire) && !IsExpiryInPast(expire))
@@ -193,41 +202,15 @@ namespace GuidApiService.Services
 
                 if (toUpdate)
                 {
-                    _dbContext.Entry(possibleGuidInfo).State = EntityState.Modified;
-                    await _dbContext.SaveChangesAsync();
+                    await _guidApiRepository.Update(possibleGuidInfo);
                 }
             }
 
-            GuidInfo guidInfo = GetGuidInfo(guid);
+            GuidInfo guidInfo = _guidApiRepository.Get(guid);
             GuidInfoOutput guidInfoOutput = new GuidInfoOutput().GuidInfoToOutput(guidInfo);
 
 
             return guidInfoOutput;
-        }
-
-        /// <summary>
-        /// Get guid info from the data store
-        /// </summary>
-        /// <param name="guid"></param>
-        /// <returns></returns>
-        private GuidInfo GetGuidInfo(string guid)
-        {
-            Guid guidForSearch = new Guid(guid);
-            GuidInfo? possibleGuidInfo = _dbContext.GuidInfoSet.
-                Include(g => g.GuidInput).
-                FirstOrDefault(g => g.GuidInfoId == guidForSearch);
-
-            return possibleGuidInfo!;
-        }
-
-        private async Task<GuidInfo> SaveGuid(string guid, GuidInput guidInput)
-        {
-            // TODO - log and handle error based on requirement and flow error back
-            GuidInfo guidInfo = BuildGuid(guid, guidInput);
-            _dbContext.GuidInfoSet.Add(guidInfo);
-            await _dbContext.SaveChangesAsync();
-
-            return guidInfo;
         }
     }
 }
