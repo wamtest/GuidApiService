@@ -10,9 +10,9 @@
 
 1. Date and time
 
-Datetime can get complicated here. In this program we store as default timezone.
-A better option is to store as UTC and return as such. 
-The client code can convert to user's detected timezone.
+Storing time by directly converting time to UTC.
+Ideally we want to get user's timezone and convert from there.
+This could be handled between the client and service code. Client can send timezone and expire, and service can use that to do the conversion to UTC.
 
 2. Guid generation
 

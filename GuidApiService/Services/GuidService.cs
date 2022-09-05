@@ -133,7 +133,7 @@ namespace GuidApiService.Services
         {
             GuidInput guidInput = new()
             {
-                Expire = new DateTime(expire),
+                Expire = new DateTime(expire).ToUniversalTime(),
                 MetaData = user
             };
 
@@ -155,7 +155,7 @@ namespace GuidApiService.Services
             string newGuid = Guid.NewGuid().ToString();
             GuidInput guidInput = new()
             {
-                Expire = DateTime.Now.AddDays(30),
+                Expire = DateTime.Now.AddDays(30).ToUniversalTime(),
                 MetaData = user
             };
             var possibleGuidInfo = await _guidApiRepository.Get(newGuid);
@@ -189,7 +189,7 @@ namespace GuidApiService.Services
             {
                 if (IsExpiryValid(expire) && !IsExpiryInPast(expire))
                 {
-                    var expireAsDateTime = new DateTime(expire);
+                    var expireAsDateTime = new DateTime(expire).ToUniversalTime();
                     possibleGuidInfo.GuidInput!.Expire = expireAsDateTime;
                     toUpdate = true;
                 }
@@ -211,5 +211,6 @@ namespace GuidApiService.Services
 
             return guidInfoOutput;
         }
+
     }
 }
