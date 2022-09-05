@@ -6,8 +6,17 @@
     /// </summary>
     public class GuidInfoOutput
     {
+        /// <summary>
+        /// The Guid key
+        /// </summary>
         public string? Guid { get; set; }
+        /// <summary>
+        /// Expire as ticks
+        /// </summary>
         public long? Expire { get; set; }
+        /// <summary>
+        /// Metadata
+        /// </summary>
         public string? User { get; set; }
 
         /// <summary>

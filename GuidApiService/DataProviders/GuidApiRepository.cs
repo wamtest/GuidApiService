@@ -40,7 +40,7 @@ namespace GuidApiService.DataProviders
         public async Task<bool> Delete(string guid)
         {
             var didRemove = false;
-            var guidInfo = Get(guid);
+            var guidInfo = await Get(guid);
             if (guidInfo != null)
             {
                 _dbContext.GuidInfoSet.Remove(guidInfo);
@@ -56,12 +56,12 @@ namespace GuidApiService.DataProviders
         /// </summary>
         /// <param name="guid"></param>
         /// <returns></returns>
-        public GuidInfo Get(string guid)
+        public async Task<GuidInfo> Get(string guid)
         {
             Guid guidForSearch = new Guid(guid);
-            GuidInfo? possibleGuidInfo = _dbContext.GuidInfoSet.
+            GuidInfo? possibleGuidInfo = await Task.Run(() => _dbContext.GuidInfoSet.
                 Include(g => g.GuidInput).
-                FirstOrDefault(g => g.GuidInfoId == guidForSearch);
+                FirstOrDefault(g => g.GuidInfoId == guidForSearch));
 
             return possibleGuidInfo!;
         }

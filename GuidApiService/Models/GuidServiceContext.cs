@@ -7,6 +7,10 @@ namespace GuidApiService.Models
     /// </summary>
     public class GuidServiceContext : DbContext
     {
+        /// <summary>
+        /// Dbcontext constructor
+        /// </summary>
+        /// <param name="options"></param>
         public GuidServiceContext(DbContextOptions<GuidServiceContext> options) : base(options)
         {
         }

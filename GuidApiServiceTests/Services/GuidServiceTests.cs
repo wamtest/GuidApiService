@@ -52,8 +52,8 @@ namespace GuidApiService.Services.Tests
                 var sut = new GuidService(repo);
                 var output = await sut.Get(guid.ToString());
 
-                Assert.Equal(guid.ToString("N").ToUpper(), output.Guid);
-                Assert.Equal(user, output.User);
+                Assert.Equal(guid.ToString("N").ToUpper(), output?.Guid);
+                Assert.Equal(user, output?.User);
 
                 await sut.Delete(guid.ToString());
                 output = await sut.Get(guid.ToString());
@@ -83,8 +83,8 @@ namespace GuidApiService.Services.Tests
                 var sut = new GuidService(repo);
                 var output = await sut.Get(guid.ToString());
 
-                Assert.Equal(guid.ToString("N").ToUpper(), output.Guid);
-                Assert.Equal(user, output.User);
+                Assert.Equal(guid.ToString("N").ToUpper(), output?.Guid);
+                Assert.Equal(user, output?.User);
             }
         }
 
@@ -103,10 +103,10 @@ namespace GuidApiService.Services.Tests
 
                 var output = await sut.Create(user);
 
-                Assert.Equal(user, output.User);
-                Assert.NotNull(output.Expire);
-                Assert.NotEqual(0, output.Expire);
-                Assert.NotEmpty(output.Guid);
+                Assert.Equal(user, output?.User);
+                Assert.NotNull(output?.Expire);
+                Assert.NotEqual(0, output?.Expire);
+                Assert.NotEmpty(output?.Guid);
             }
         }
 

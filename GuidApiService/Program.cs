@@ -20,7 +20,7 @@ builder.Services.AddTransient<IGuidService, GuidService>();
 if (isSqlServer)
 {
     builder.Services.AddDbContext<GuidServiceContext>(opt => opt.UseSqlServer(dbConnString));
-    
+
     if (shouldUseCache)
     {
         builder.Services.AddStackExchangeRedisCache(options =>

@@ -49,14 +49,14 @@ namespace GuidApiService.Services
         /// <param name="expire"></param>
         /// <param name="user"></param>
         /// <returns></returns>
-        Task<GuidInfoOutput> Create(string guid, long expire, string user);
+        Task<GuidInfoOutput?> Create(string guid, long expire, string user);
 
         /// <summary>
         /// Create GuidInfo for user with generated guid and default expire
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        Task<GuidInfoOutput> Create(string user);
+        Task<GuidInfoOutput?> Create(string user);
 
         /// <summary>
         /// Delete GuidInfo

@@ -11,7 +11,7 @@
         /// </summary>
         /// <param name="guid"></param>
         /// <returns></returns>
-        T Get(string guid);
+        Task<T> Get(string guid);
 
         /// <summary>
         /// Create entity in the datastore

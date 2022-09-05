@@ -16,7 +16,6 @@ namespace GuidApiService.Controllers
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="context"></param>
         /// <param name="guidService"></param>
         public GuidInfoController(IGuidService guidService)
         {
@@ -40,7 +39,7 @@ namespace GuidApiService.Controllers
                 return Problem("Invalid input guid");
             }
 
-            GuidInfoOutput guidInfoOutput = await _guidService.Get(guid);
+            GuidInfoOutput? guidInfoOutput = await _guidService.Get(guid);
 
             if (guidInfoOutput == null)
             {
@@ -76,7 +75,7 @@ namespace GuidApiService.Controllers
                 return Problem("Invalid expiry");
             }
 
-            GuidInfoOutput guidInfoOutput = await _guidService.Create(guid, expire, user);
+            GuidInfoOutput? guidInfoOutput = await _guidService.Create(guid, expire, user);
 
             return CreatedAtAction("Create", guidInfoOutput);
         }
@@ -92,7 +91,7 @@ namespace GuidApiService.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GuidInfoOutput>> Create(string user)
         {
-            GuidInfoOutput guidInfoOutput = await _guidService.Create(user);
+            GuidInfoOutput? guidInfoOutput = await _guidService.Create(user);
 
             return CreatedAtAction("Create", guidInfoOutput);
         }
